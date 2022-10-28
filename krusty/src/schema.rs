@@ -3,8 +3,8 @@ use diesel::table;
 table! {
     #[sql_name = "Countries"]
     countries (country_id) {
-        name -> Text,
-        country_id -> Text,
+        name -> Varchar,
+        country_id -> Varchar,
         area_sqkm -> Integer,
         population -> Integer,
     }
@@ -13,9 +13,9 @@ table! {
 table! {
     #[sql_name = "Olympics"]
     olympics (olympic_id) {
-        olympic_id -> Text,
-        country_id -> Text,
-        city -> Text,
+        olympic_id -> Varchar,
+        country_id -> Varchar,
+        city -> Varchar,
         year -> Integer,
         #[sql_name = "startdate"]
         start_date -> Date,
@@ -27,9 +27,9 @@ table! {
 table! {
     #[sql_name = "Players"]
     players (player_id) {
-        name -> Text,
-        player_id -> Text,
-        country_id -> Text,
+        name -> Varchar,
+        player_id -> Varchar,
+        country_id -> Varchar,
         #[sql_name = "birthdate"]
         birth_date -> Date,
     }
@@ -38,23 +38,23 @@ table! {
 table! {
     #[sql_name = "Events"]
     events (event_id) {
-        event_id -> Text,
-        name -> Text,
+        event_id -> Varchar,
+        name -> Varchar,
         #[sql_name = "eventtype"]
-        event_type -> Text,
-        olympic_id -> Text,
+        event_type -> Varchar,
+        olympic_id -> Varchar,
         is_team_event -> Bool,
         num_players_in_team -> Integer,
-        result_noted_in -> Text,
+        result_noted_in -> Varchar,
     }
 }
 
 table! {
     #[sql_name = "Results"]
     results (event_id, player_id) {
-        event_id -> Text,
-        player_id -> Text,
-        medal -> Text,
+        event_id -> Varchar,
+        player_id -> Varchar,
+        medal -> Varchar,
         result -> Float,
     }
 }
