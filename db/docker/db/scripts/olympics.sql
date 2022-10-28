@@ -1,0 +1,1 @@
+GRANT ALL PRIVILEGES ON DATABASE sidorenkov_204 TO sidorenkov_204;

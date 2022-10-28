@@ -1,0 +1,17 @@
+# System
+.DS_Store
+
+# IDEs
+.fleet/
+.idea/
+.vscode/
+
+# Builds
+*.o
+build/
+dz/
+target/
+
+# Imports
+go.sum
+Cargo.lock
