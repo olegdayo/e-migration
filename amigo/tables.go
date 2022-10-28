@@ -1,36 +1,51 @@
 package main
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Countries struct {
 	gorm.Model
-	Name       string `gorm:"name"`
-	CountryID  string `gorm:"country_id"`
-	AreaSQKM   int    `gorm:"area_skqm"`
-	Population int    `gorm:"population"`
+	Name       string
+	CountryID  string `gorm:"primaryKey"`
+	AreaSQKM   int
+	Population int
 }
 
 type Olympics struct {
 	gorm.Model
-	OlympicID string `gorm:"olympic_id"`
-	CountryID string `gorm:"country_id"`
-	City      string `gorm:"city"`
-	Year      string `gorm:"year"`
-	StartDate string `gorm:"startdate"`
-	EndDate   string `gorm:"enddate"`
+	OlympicID string `gorm:"primaryKey"`
+	CountryID string
+	City      string
+	Year      string
+	StartDate string
+	EndDate   string
 }
 
 type Players struct {
 	gorm.Model
-	Name      string `gorm:"name"`
-	PlayerID  string `gorm:"player_id"`
-	CountryID string `gorm`
+	Name      string
+	PlayerID  string `gorm:"primaryKey"`
+	CountryID string
+	BirthDate time.Time
 }
 
 type Events struct {
 	gorm.Model
+	EventID          string `gorm:"primaryKey"`
+	Name             string
+	EventType        string
+	OlympicID        string
+	IsTeamEvent      bool
+	NumPlayersInTeam int
+	ResultNotedIn    string
 }
 
 type Results struct {
 	gorm.Model
+	EventID  string `gorm:"primaryKey"`
+	PlayerID string `gorm:"primaryKey"`
+	Medal    string
+	Result   float64
 }

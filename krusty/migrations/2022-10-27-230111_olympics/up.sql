@@ -8,13 +8,13 @@ drop table if exists olympics.Countries;
 
 create table olympics.Countries (
                                     name char(40),
-                                    country_id char(3) unique,
+                                    country_id char(3) primary key,
                                     area_sqkm integer,
                                     population integer
 );
 
 create table olympics.Olympics (
-                                   olympic_id char(7) unique,
+                                   olympic_id char(7) primary key,
                                    country_id char(3),
                                    city char(50),
                                    year integer,
@@ -25,14 +25,14 @@ create table olympics.Olympics (
 
 create table olympics.Players (
                                   name char(40),
-                                  player_id char(10) unique,
+                                  player_id char(10) primary key,
                                   country_id char(3),
                                   birthdate date,
                                   foreign key (country_id) references olympics.Countries(country_id)
 );
 
 create table olympics.Events (
-                                 event_id char(7) unique,
+                                 event_id char(7) primary key,
                                  name char(40),
                                  eventtype char(20),
                                  olympic_id char(7),
@@ -47,6 +47,7 @@ create table olympics.Results (
                                   player_id char(10),
                                   medal char(7),
                                   result float,
+                                  primary key (event_id, player_id),
                                   foreign key (event_id) references olympics.Events(event_id),
                                   foreign key (player_id) references olympics.Players(player_id)
 );
