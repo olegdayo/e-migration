@@ -1,4 +1,4 @@
-module amigo
+module github.com/offluck/e-migration/amigo
 
 go 1.18
 
