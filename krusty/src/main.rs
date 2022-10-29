@@ -9,7 +9,9 @@ use dotenv::dotenv;
 use std::env;
 
 fn create_connection() -> PgConnection {
-    dotenv().ok();
+    dotenv()
+        .ok()
+        .expect("Failed to work with .env");
 
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
