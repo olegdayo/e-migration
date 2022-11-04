@@ -1,6 +1,5 @@
 use diesel::prelude::*;
 use chrono::{Date, Utc};
-use crate::schema::olympics;
 
 #[derive(Debug, Queryable)]
 #[diesel(table_name = countries)]
