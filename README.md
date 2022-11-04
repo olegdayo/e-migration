@@ -9,7 +9,13 @@ Go migration with gORM.
 - [ ] request-3
 - [ ] request-4
 - [ ] request-5
-- [ ] web-server
+- [X] web-server
+
+To run Go server run:
+```
+cd amigo
+go run .
+```
 
 ## KRusty
 Rust migration with diesel.
@@ -22,6 +28,11 @@ Rust migration with diesel.
 - [ ] request-5
 - [X] web-server
 
+To run Rust server run:
+```
+cd krusty
+cargo run
+```
 
 In both of the projects there is an implemented web-server for you to have better visual data representation:
 - localhost:8080/ - answers for all 5 tasks

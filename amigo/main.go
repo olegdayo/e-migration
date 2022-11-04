@@ -1,23 +1,46 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
+	"os"
 )
 
-func main() {
-	dsn := `host=localhost
-			user=sidorenkov_204
-			password=sidorenkov_204
-			dbname=sidorenkov_204
-			port=5432
-			sslmode=disable`
+func createConnection() (*gorm.DB, error) {
+	url, ok := os.LookupEnv("DATABASE_URL")
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if ok != true {
+		return nil, errors.New("cannot find database url in environment variables")
+	}
+
+	log.Printf("DB URL: %s", url)
+	return gorm.Open(postgres.Open(url), &gorm.Config{})
+}
+
+func init() {
+	if err := godotenv.Load(); err != nil {
+		panic("No .env file found")
+	}
+}
+
+func main() {
+	db, err := createConnection()
+
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(db)
+	log.Println(db)
+
+	answers := NewAnswers()
+	answers.GetAnswers()
+	fmt.Println(answers)
+
+	s := NewServer(answers)
+	fmt.Println(s)
+	s.Start()
 }
