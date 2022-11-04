@@ -1,5 +1,4 @@
 use diesel::prelude::*;
-use dotenv::dotenv;
 use std::env;
 
 pub fn create_connection() -> PgConnection {
