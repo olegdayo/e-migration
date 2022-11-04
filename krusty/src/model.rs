@@ -1,7 +1,8 @@
 use diesel::prelude::*;
 use chrono::{Date, Utc};
+use serde::{Serialize};
 
-#[derive(Debug, Queryable)]
+#[derive(Debug, Queryable, Clone, Serialize)]
 #[diesel(table_name = countries)]
 pub struct Country {
     pub name: String,
@@ -10,7 +11,7 @@ pub struct Country {
     pub population: i32,
 }
 
-#[derive(Debug, Queryable)]
+#[derive(Debug, Queryable, Clone)]
 #[diesel(table_name = olympics)]
 pub struct Olympic {
     pub olympic_id: String,
@@ -21,7 +22,7 @@ pub struct Olympic {
     pub end_date: Date<Utc>,
 }
 
-#[derive(Debug, Queryable)]
+#[derive(Debug, Queryable, Clone)]
 #[diesel(table_name = players)]
 pub struct Player {
     pub name: String,
@@ -30,7 +31,7 @@ pub struct Player {
     pub birth_date: Date<Utc>,
 }
 
-#[derive(Debug, Queryable)]
+#[derive(Debug, Queryable, Clone, Serialize)]
 #[diesel(table_name = events)]
 pub struct Event {
     pub event_id: String,
@@ -42,7 +43,7 @@ pub struct Event {
     pub result_noted_in: String,
 }
 
-#[derive(Debug, Queryable)]
+#[derive(Debug, Queryable, Clone, Serialize)]
 #[diesel(table_name = results)]
 pub struct Result {
     pub event_id: String,
