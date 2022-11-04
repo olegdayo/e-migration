@@ -1,46 +1,46 @@
 CREATE SCHEMA olympics;
 
 create table olympics.Countries (
-                                    name char(40),
-                                    country_id char(3) primary key,
-                                    area_sqkm integer,
-                                    population integer
+                                    name varchar(40) not null,
+                                    country_id varchar(3) primary key not null,
+                                    area_sqkm integer not null,
+                                    population integer not null
 );
 
 create table olympics.Olympics (
-                                   olympic_id char(7) primary key,
-                                   country_id char(3),
-                                   city char(50),
-                                   year integer,
-                                   startdate date,
-                                   enddate date,
+                                   olympic_id varchar(7) primary key not null,
+                                   country_id varchar(3) not null,
+                                   city varchar(50) not null,
+                                   year integer not null,
+                                   startdate date not null,
+                                   enddate date not null,
                                    foreign key (country_id) references olympics.Countries(country_id)
 );
 
 create table olympics.Players (
-                                  name char(40),
-                                  player_id char(10) primary key,
-                                  country_id char(3),
-                                  birthdate date,
+                                  name varchar(40) not null,
+                                  player_id varchar(10) primary key not null,
+                                  country_id varchar(3) not null,
+                                  birthdate date not null,
                                   foreign key (country_id) references olympics.Countries(country_id)
 );
 
 create table olympics.Events (
-                                 event_id char(7) primary key,
-                                 name char(40),
-                                 eventtype char(20),
-                                 olympic_id char(7),
-                                 is_team_event integer check (is_team_event in (0, 1)),
-                                 num_players_in_team integer,
-                                 result_noted_in char(100),
+                                 event_id varchar(7) primary key not null,
+                                 name varchar(40) not null,
+                                 eventtype varchar(20) not null,
+                                 olympic_id varchar(7) not null,
+                                 is_team_event integer check (is_team_event in (0, 1)) not null,
+                                 num_players_in_team integer not null,
+                                 result_noted_in varchar(100) not null,
                                  foreign key (olympic_id) references olympics.Olympics(olympic_id)
 );
 
 create table olympics.Results (
-                                  event_id char(7),
-                                  player_id char(10),
-                                  medal char(7),
-                                  result float,
+                                  event_id varchar(7) not null,
+                                  player_id varchar(10) not null,
+                                  medal varchar(7) not null,
+                                  result float not null,
                                   primary key (event_id, player_id),
                                   foreign key (event_id) references olympics.Events(event_id),
                                   foreign key (player_id) references olympics.Players(player_id)

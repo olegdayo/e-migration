@@ -3,51 +3,51 @@
 pub mod olympics {
     diesel::table! {
         olympics.countries (country_id) {
-            name -> Nullable<Bpchar>,
-            country_id -> Bpchar,
-            area_sqkm -> Nullable<Int4>,
-            population -> Nullable<Int4>,
+            name -> Varchar,
+            country_id -> Varchar,
+            area_sqkm -> Int4,
+            population -> Int4,
         }
     }
 
     diesel::table! {
         olympics.events (event_id) {
-            event_id -> Bpchar,
-            name -> Nullable<Bpchar>,
-            eventtype -> Nullable<Bpchar>,
-            olympic_id -> Nullable<Bpchar>,
-            is_team_event -> Nullable<Int4>,
-            num_players_in_team -> Nullable<Int4>,
-            result_noted_in -> Nullable<Bpchar>,
+            event_id -> Varchar,
+            name -> Varchar,
+            eventtype -> Varchar,
+            olympic_id -> Varchar,
+            is_team_event -> Int4,
+            num_players_in_team -> Int4,
+            result_noted_in -> Varchar,
         }
     }
 
     diesel::table! {
         olympics.olympics (olympic_id) {
-            olympic_id -> Bpchar,
-            country_id -> Nullable<Bpchar>,
-            city -> Nullable<Bpchar>,
-            year -> Nullable<Int4>,
-            startdate -> Nullable<Date>,
-            enddate -> Nullable<Date>,
+            olympic_id -> Varchar,
+            country_id -> Varchar,
+            city -> Varchar,
+            year -> Int4,
+            startdate -> Date,
+            enddate -> Date,
         }
     }
 
     diesel::table! {
         olympics.players (player_id) {
-            name -> Nullable<Bpchar>,
-            player_id -> Bpchar,
-            country_id -> Nullable<Bpchar>,
-            birthdate -> Nullable<Date>,
+            name -> Varchar,
+            player_id -> Varchar,
+            country_id -> Varchar,
+            birthdate -> Date,
         }
     }
 
     diesel::table! {
         olympics.results (event_id, player_id) {
-            event_id -> Bpchar,
-            player_id -> Bpchar,
-            medal -> Nullable<Bpchar>,
-            result -> Nullable<Float8>,
+            event_id -> Varchar,
+            player_id -> Varchar,
+            medal -> Varchar,
+            result -> Float8,
         }
     }
 

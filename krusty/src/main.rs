@@ -1,13 +1,13 @@
 extern crate diesel;
 extern crate dotenv;
 
-// pub mod db;
 pub mod model;
 pub mod schema;
 
 use diesel::prelude::*;
 use std::env;
 use dotenv::dotenv;
+use model::*;
 
 pub fn create_connection() -> PgConnection {
     dotenv()
@@ -22,5 +22,15 @@ pub fn create_connection() -> PgConnection {
 }
 
 fn main() {
-    let conn = create_connection();
+    use schema::olympics::countries::dsl::*;
+    let mut conn = create_connection();
+
+    let cntrs = countries
+        .load::<Country>(&mut conn)
+        .expect("Error loading countries");
+
+    println!("{}", cntrs.len());
+    for cntr in cntrs {
+        println!("{:?}", cntr);
+    }
 }
