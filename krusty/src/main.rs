@@ -1,14 +1,15 @@
-mod model;
-mod schema;
-
 extern crate diesel;
 extern crate dotenv;
 
-use diesel::prelude::*;
-use dotenv::dotenv;
-use std::env;
+// pub mod db;
+pub mod model;
+pub mod schema;
 
-fn create_connection() -> PgConnection {
+use diesel::prelude::*;
+use std::env;
+use dotenv::dotenv;
+
+pub fn create_connection() -> PgConnection {
     dotenv()
         .ok()
         .expect("Failed to work with .env");
