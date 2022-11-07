@@ -11,7 +11,7 @@ Go migration with gORM.
 - [ ] request-5
 - [X] web-server
 
-To run Go server run:
+To run Go server:
 ```
 cd amigo
 go run .
@@ -28,7 +28,7 @@ Rust migration with diesel.
 - [ ] request-5
 - [X] web-server
 
-To run Rust server run:
+To run Rust server:
 ```
 cd krusty
 cargo run
