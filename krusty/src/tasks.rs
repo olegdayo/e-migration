@@ -35,8 +35,10 @@ impl TaskRunner {
 
     pub fn run1(&mut self) -> Vec<Country> {
         use crate::schema::olympics::countries::dsl::*;
+        use crate::schema::olympics::countries::country_id;
 
         let cntrs: Vec<Country> = countries
+            .filter(country_id.eq("RUS"))
             .load(&mut self.conn)
             .expect("Something went wrong with the countries!");
         cntrs
