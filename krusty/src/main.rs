@@ -18,7 +18,7 @@ fn main() {
 
     let server = Server::new(
         TaskRunner::new()
-        .get_answers()
+            .get_answers()
     );
     server.start().unwrap();
 }
