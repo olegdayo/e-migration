@@ -1,5 +1,6 @@
 CREATE SCHEMA olympics;
 
+
 create table olympics.Countries (
                                     name varchar(40) not null,
                                     country_id varchar(3) primary key not null,
