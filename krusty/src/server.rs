@@ -2,6 +2,7 @@ use crate::tasks::Answers;
 use iron::{error, status, Iron, IronResult, Request, Response};
 use router::Router;
 use serde_json::to_string;
+use std::env;
 
 pub struct Server {
     router: Router,
@@ -84,6 +85,10 @@ impl Server {
     }
 
     pub fn start(self) -> Result<iron::Listening, error::HttpError> {
-        Iron::new(self.router).http("localhost:8080")
+        let port = env::var("PORT").expect("PORT must be set");
+
+        Iron::new(self.router).http(
+            format!("0.0.0.0:{}", port)
+        )
     }
 }

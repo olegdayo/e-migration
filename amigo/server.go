@@ -4,10 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-)
-
-const (
-	Port uint16 = 8080
+	"os"
 )
 
 type Server struct {
@@ -18,7 +15,12 @@ type Server struct {
 func NewServer(answers *Answers) (s *Server) {
 	s = new(Server)
 
-	s.Addr = fmt.Sprintf(":%d", Port)
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
+		port = "8080"
+	}
+
+	s.Addr = fmt.Sprintf(":%s", port)
 	s.answers = answers
 	s.Handler = s.setRouter()
 

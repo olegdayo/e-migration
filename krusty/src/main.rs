@@ -15,7 +15,6 @@ use server::Server;
 
 fn main() {
     dotenv().ok().expect("Failed to work with .env");
-
     let server = Server::new(
         TaskRunner::new()
             .get_answers()
