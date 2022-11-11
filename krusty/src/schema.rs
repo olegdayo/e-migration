@@ -57,6 +57,11 @@ pub mod olympics {
     diesel::joinable!(results -> events (event_id));
     diesel::joinable!(results -> players (player_id));
 
+    diesel::allow_columns_to_appear_in_same_group_by_clause!(
+        players::player_id,
+        olympics::olympic_id
+    );
+
     diesel::allow_tables_to_appear_in_same_query!(
         countries,
         events,
