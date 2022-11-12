@@ -15,7 +15,7 @@ type Server struct {
 func NewServer(answers *Answers) (s *Server) {
 	s = new(Server)
 
-	port, ok := os.LookupEnv("PORT")
+	port, ok := os.LookupEnv("AMIGO_PORT")
 	if !ok {
 		port = "8080"
 	}

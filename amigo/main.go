@@ -11,7 +11,7 @@ import (
 )
 
 func createConnection() (*gorm.DB, error) {
-	url, ok := os.LookupEnv("DATABASE_URL")
+	url, ok := os.LookupEnv("AMIGO_DATABASE_URL")
 
 	if ok != true {
 		return nil, errors.New("cannot find database url in environment variables")
