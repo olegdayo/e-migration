@@ -85,7 +85,7 @@ impl Server {
     }
 
     pub fn start(self) -> Result<iron::Listening, error::HttpError> {
-        let port = env::var("KRUSTY_PORT").expect("PORT must be set");
+        let port = env::var("PORT").expect("PORT must be set");
 
         Iron::new(self.router).http(
             format!("0.0.0.0:{}", port)

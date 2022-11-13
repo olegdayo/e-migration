@@ -1,5 +1,7 @@
-use crate::db::create_connection;
+use std::collections::HashMap;
+
 use crate::model::*;
+use crate::{db::create_connection, schema::olympics::countries::country_id};
 use diesel::{dsl::count, prelude::*, sql_query};
 use serde::Serialize;
 
@@ -12,7 +14,7 @@ pub struct Answers {
     pub first: Vec<i32>,
     pub second: Vec<i32>,
     pub third: Vec<(String, String)>,
-    pub forth: Vec<i32>,
+    pub forth: Vec<String>,
     pub fifth: Vec<String>,
 }
 
@@ -47,19 +49,50 @@ impl TaskRunner {
         use crate::schema::olympics::players;
         use crate::schema::olympics::results;
 
-        let ans: Vec<(String, String)> = results::table
+        results::table
             .inner_join(players::table.on(players::player_id.eq(results::player_id)))
             .inner_join(events::table.on(events::event_id.eq(results::event_id)))
             .inner_join(olympics::table.on(olympics::olympic_id.eq(events::olympic_id)))
             .select((players::player_id, olympics::olympic_id))
             .load(&mut self.conn)
-            .expect("Cannot execute query");
-
-        ans
+            .expect("Cannot execute query")
     }
 
-    pub fn run4(&mut self) -> Vec<i32> {
-        vec![4]
+    pub fn run4(&mut self) -> Vec<String> {
+        use crate::schema::olympics::countries;
+        use crate::schema::olympics::players;
+
+        let mut countries = Vec::<(String, i32)>::new();
+
+        for c in ['A', 'E', 'I', 'O', 'U'] {
+            countries.extend(
+                countries::table
+                        .inner_join(players::table.on(players::country_id.eq(countries::country_id)))
+                        .filter(players::name.like(format!("{}%", c)))
+                        .select((countries::country_id, countries::population))
+                        .load(&mut self.conn)
+                        .expect("Cannot execute query")
+            );
+        }
+
+        let mut counts = HashMap::<String, (i32, i32)>::new();
+        for (c, p) in countries {
+            if counts.contains_key(&c) {
+                counts.get_mut(&c).expect("Cannot find the value").0 += 1;
+                continue;
+            }
+            counts.insert(c, (1, p));
+        }
+
+        let mut ans: (&String, f64) = (&String::new(), -1f64);
+        for country in counts.keys() {
+            let vals = counts[country];
+            if (vals.0 as f64) / (vals.1 as f64) > ans.1 {
+                ans.0 = country;
+            }
+        }
+
+        vec![ans.0.clone()]
     }
 
     pub fn run5(&mut self) -> Vec<String> {
@@ -68,17 +101,19 @@ impl TaskRunner {
         use crate::schema::olympics::players;
         use crate::schema::olympics::results;
 
-        let ans: Vec<String> = countries::table
+        countries::table
             .inner_join(players::table.on(players::country_id.eq(countries::country_id)))
             .inner_join(results::table.on(results::player_id.eq(players::player_id)))
             .inner_join(events::table.on(events::event_id.eq(results::event_id)))
             .filter(events::is_team_event.eq(1))
             .group_by(countries::country_id)
-            .order_by((count(players::player_id), countries::population))
+            .order_by((
+                count(players::player_id).desc(),
+                countries::population.desc(),
+            ))
             .select(countries::country_id)
             .load(&mut self.conn)
-            .expect("Cannot execute query");
-
-        ans[..5].to_vec()
+            .expect("Cannot execute query")[..5]
+            .to_vec()
     }
 }
