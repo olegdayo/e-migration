@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 
-use crate::model::*;
-use crate::{db::create_connection, schema::olympics::countries::country_id};
-use diesel::{dsl::count, prelude::*, sql_query};
+use crate::{db::create_connection};
+use diesel::{dsl::count, prelude::*};
 use serde::Serialize;
 
 pub struct TaskRunner {
