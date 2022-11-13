@@ -20,8 +20,8 @@ Rust migration with diesel.
 - [ ] request-1
 - [ ] request-2
 - [X] request-3
-- [ ] request-4
-- [ ] request-5
+- [X] request-4
+- [X] request-5
 - [X] web-server
 
 In both of the projects there is an implemented web-server for you to have better visual data representation:
