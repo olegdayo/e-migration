@@ -17,8 +17,8 @@ Rust migration with diesel.
 
 - [X] migration
 - [X] ORM
-- [ ] request-1
-- [ ] request-2
+- [X] request-1
+- [X] request-2
 - [X] request-3
 - [X] request-4
 - [X] request-5
