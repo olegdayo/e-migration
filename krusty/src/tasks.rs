@@ -10,8 +10,8 @@ pub struct TaskRunner {
 
 #[derive(Serialize, Clone)]
 pub struct Answers {
-    pub first: Vec<i32>,
-    pub second: Vec<i32>,
+    pub first: Vec<(String, i64)>,
+    pub second: Vec<String>,
     pub third: Vec<(String, String)>,
     pub forth: Vec<String>,
     pub fifth: Vec<String>,
@@ -34,12 +34,34 @@ impl TaskRunner {
         }
     }
 
-    pub fn run1(&mut self) -> Vec<i32> {
-        vec![1]
+    pub fn run1(&mut self) -> Vec<(String, i64)> {
+        use crate::schema::olympics::olympics;
+        use crate::schema::olympics::events;
+        use crate::schema::olympics::results;
+        use crate::schema::olympics::players;
+
+        olympics::table
+            .filter(olympics::year.eq(2004))
+            .inner_join(events::table.on(events::olympic_id.eq(olympics::olympic_id)))
+            .inner_join(results::table.on(results::event_id.eq(events::event_id)))
+            .inner_join(players::table.on(players::player_id.eq(results::player_id)))
+            .group_by(olympics::olympic_id)
+            .select((
+                olympics::olympic_id,
+                count(players::player_id)
+            ))
+            .load(&mut self.conn)
+            .expect("Cannot execute query")
     }
 
-    pub fn run2(&mut self) -> Vec<i32> {
-        vec![2]
+    pub fn run2(&mut self) -> Vec<String> {
+        use crate::schema::olympics::events;
+
+        events::table
+            .filter(events::is_team_event.eq(0))
+            .select(events::event_id)
+            .load(&mut self.conn)
+            .expect("Cannot execute query")
     }
 
     pub fn run3(&mut self) -> Vec<(String, String)> {
