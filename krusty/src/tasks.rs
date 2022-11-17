@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{db::create_connection};
+use crate::db::create_connection;
 use diesel::{dsl::count, prelude::*};
 use serde::Serialize;
 
@@ -10,11 +10,11 @@ pub struct TaskRunner {
 
 #[derive(Serialize, Clone)]
 pub struct Answers {
-    pub first: Vec<(String, i64)>,
+    pub first: Vec<(String, i64, i64)>,
     pub second: Vec<String>,
     pub third: Vec<(String, String)>,
     pub forth: Vec<String>,
-    pub fifth: Vec<String>,
+    pub fifth: Vec<(String, f64)>,
 }
 
 impl TaskRunner {
@@ -34,24 +34,47 @@ impl TaskRunner {
         }
     }
 
-    pub fn run1(&mut self) -> Vec<(String, i64)> {
-        use crate::schema::olympics::olympics;
+    pub fn run1(&mut self) -> Vec<(String, i64, i64)> {
         use crate::schema::olympics::events;
-        use crate::schema::olympics::results;
+        use crate::schema::olympics::olympics;
         use crate::schema::olympics::players;
+        use crate::schema::olympics::results;
 
-        olympics::table
+        let all_counts: Vec<(String, i64)> = olympics::table
             .filter(olympics::year.eq(2004))
             .inner_join(events::table.on(events::olympic_id.eq(olympics::olympic_id)))
             .inner_join(results::table.on(results::event_id.eq(events::event_id)))
             .inner_join(players::table.on(players::player_id.eq(results::player_id)))
             .group_by(olympics::olympic_id)
-            .select((
-                olympics::olympic_id,
-                count(players::player_id)
-            ))
+            .select((olympics::olympic_id, count(players::player_id)))
             .load(&mut self.conn)
-            .expect("Cannot execute query")
+            .expect("Cannot execute query");
+
+        let golden_counts: Vec<(String, i64)> = olympics::table
+            .filter(olympics::year.eq(2004))
+            .inner_join(events::table.on(events::olympic_id.eq(olympics::olympic_id)))
+            .inner_join(results::table.on(results::event_id.eq(events::event_id)))
+            .filter(results::medal.eq("GOLD"))
+            .inner_join(players::table.on(players::player_id.eq(results::player_id)))
+            .group_by(olympics::olympic_id)
+            .select((olympics::olympic_id, count(players::player_id)))
+            .load(&mut self.conn)
+            .expect("Cannot execute query");
+
+        let mut counts = HashMap::<String, (i64, i64)>::new();
+
+        for (olymp, count) in all_counts {
+            counts.insert(olymp, (count, 0i64));
+        }
+
+        for (olymp, count) in golden_counts {
+            counts.get_mut(&olymp).expect("Cannot get a key").1 = count;
+        }
+
+        counts
+            .into_iter()
+            .map(|v: (String, (i64, i64))| (v.0, v.1 .0, v.1 .1))
+            .collect()
     }
 
     pub fn run2(&mut self) -> Vec<String> {
@@ -88,11 +111,11 @@ impl TaskRunner {
         for c in ['A', 'E', 'I', 'O', 'U'] {
             countries.extend(
                 countries::table
-                        .inner_join(players::table.on(players::country_id.eq(countries::country_id)))
-                        .filter(players::name.like(format!("{}%", c)))
-                        .select((countries::country_id, countries::population))
-                        .load(&mut self.conn)
-                        .expect("Cannot execute query")
+                    .inner_join(players::table.on(players::country_id.eq(countries::country_id)))
+                    .filter(players::name.like(format!("{}%", c)))
+                    .select((countries::country_id, countries::population))
+                    .load(&mut self.conn)
+                    .expect("Cannot execute query"),
             );
         }
 
@@ -116,25 +139,44 @@ impl TaskRunner {
         vec![ans.0.clone()]
     }
 
-    pub fn run5(&mut self) -> Vec<String> {
+    pub fn run5(&mut self) -> Vec<(String, f64)> {
         use crate::schema::olympics::countries;
         use crate::schema::olympics::events;
         use crate::schema::olympics::players;
         use crate::schema::olympics::results;
 
-        countries::table
+        let countries: Vec<(String, i64, i32)> = countries::table
             .inner_join(players::table.on(players::country_id.eq(countries::country_id)))
             .inner_join(results::table.on(results::player_id.eq(players::player_id)))
             .inner_join(events::table.on(events::event_id.eq(results::event_id)))
             .filter(events::is_team_event.eq(1))
             .group_by(countries::country_id)
-            .order_by((
-                count(players::player_id).desc(),
-                countries::population.desc(),
+            .select((
+                countries::country_id,
+                count(players::player_id),
+                countries::population,
             ))
-            .select(countries::country_id)
             .load(&mut self.conn)
-            .expect("Cannot execute query")[..5]
-            .to_vec()
+            .expect("Cannot execute query")
+            .to_vec();
+
+        let mut densities: Vec<(String, f64)> = countries
+            .into_iter()
+            .map(|v: (String, i64, i32)| (v.0, v.1 as f64 / v.2 as f64))
+            .collect();
+
+        densities
+            .sort_by(
+                |a, b| {
+                    if a.1 > b.1 {
+                        return std::cmp::Ordering::Greater;
+                    } else if a.1 < b.1 {
+                        return std::cmp::Ordering::Less;
+                    }
+                    return std::cmp::Ordering::Equal;
+                }
+            );
+
+        densities[..5].to_vec()
     }
 }
